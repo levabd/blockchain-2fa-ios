@@ -1,0 +1,11 @@
+platform :ios, '9.0'
+use_frameworks!
+
+target 'a2fa' do
+	use_frameworks!
+	
+	pod 'Firebase/Core'
+	pod 'Firebase/Messaging'
+	pod 'KeychainSwift', '~> 10.0'
+    pod 'SmileLock', :path => "../"
+end
