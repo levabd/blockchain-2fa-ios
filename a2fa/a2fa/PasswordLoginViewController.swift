@@ -1,6 +1,8 @@
 import UIKit
 import SmileLock
 import KeychainSwift
+import Firebase
+import UserNotifications
 
 class PasswordLoginViewController: UIViewController {
 

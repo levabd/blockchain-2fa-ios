@@ -7,9 +7,11 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>233958106215-523tif1iqkqr8gqoh34pnodnugj7as7j.apps.googleusercontent.com</string>
+	<string>233958106215-9semudre8r7nc8ritaiuiv051q4b333j.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.233958106215-523tif1iqkqr8gqoh34pnodnugj7as7j</string>
+	<string>com.googleusercontent.apps.233958106215-9semudre8r7nc8ritaiuiv051q4b333j</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>233958106215-de2a8ebnrdvfuf68ikpalqq4gu4q81uf.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAWUa3CXvIBtPY2D4rDi3lFOk1oCp1YLpY</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,7 +19,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.bc2fa.a2fa</string>
+	<string>com.2fa.2fa</string>
 	<key>PROJECT_ID</key>
 	<string>factor-2</string>
 	<key>STORAGE_BUCKET</key>
@@ -27,13 +29,13 @@
 	<key>IS_ANALYTICS_ENABLED</key>
 	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
 	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:233958106215:ios:ed1e2cca3bbcf77e</string>
+	<string>1:233958106215:ios:6fda33aebaef273a</string>
 	<key>DATABASE_URL</key>
 	<string>https://factor-2.firebaseio.com</string>
 </dict>
