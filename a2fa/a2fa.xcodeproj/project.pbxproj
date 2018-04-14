@@ -63,6 +63,7 @@
 		4473BD252080E6B60094A85D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4473BD272080E7DE0094A85D /* a2fa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = a2fa.entitlements; sourceTree = "<group>"; };
 		44EB775620810DD30002030E /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
+		44EB77582081D0C40002030E /* a2fa-Bridging-Headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "a2fa-Bridging-Headers.h"; sourceTree = "<group>"; };
 		6E36C7D34030AF37F1FE88CF /* Pods-a2fa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-a2fa.release.xcconfig"; path = "Pods/Target Support Files/Pods-a2fa/Pods-a2fa.release.xcconfig"; sourceTree = "<group>"; };
 		857CF905DFCE6B23340363A5 /* Pods-a2fa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-a2fa.debug.xcconfig"; path = "Pods/Target Support Files/Pods-a2fa/Pods-a2fa.debug.xcconfig"; sourceTree = "<group>"; };
 		E39C54FBA6BC30D844DCD0D4 /* Pods_a2fa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_a2fa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +133,7 @@
 				44026E41206287A500E60924 /* LaunchScreen.storyboard */,
 				44026E44206287A500E60924 /* Info.plist */,
 				44026E3C206287A500E60924 /* a2fa.xcdatamodeld */,
+				44EB77582081D0C40002030E /* a2fa-Bridging-Headers.h */,
 				44EB775620810DD30002030E /* Crypto.swift */,
 			);
 			path = a2fa;
@@ -319,6 +321,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-a2fa/Pods-a2fa-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -327,6 +330,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
@@ -550,6 +554,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.2fa.2fa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "a2fa/a2fa-Bridging-Headers.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -567,6 +572,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.2fa.2fa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "a2fa/a2fa-Bridging-Headers.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
