@@ -9,9 +9,9 @@
 import Foundation
 import zlib
 
-class CryptUtils {
+class CryptoUtils {
     
-    func randomString(length: Int) -> String {
+    class func randomString(length: Int) -> String {
         
         let letters : NSString = "abcdef0123456789"
         let len = UInt32(letters.length)
@@ -27,7 +27,7 @@ class CryptUtils {
         return randomString
     }
     
-    func toMD5Hash(string: String) -> String {
+    class func toMD5Hash(string: String) -> String {
         let messageData = string.data(using:.utf8)!
         var digestData = Data(count: Int(CC_MD5_DIGEST_LENGTH))
         
@@ -40,10 +40,16 @@ class CryptUtils {
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
     
-    func calculateApiKey(_ path: String, body: String, phoneNumber: String) -> String {
+    class func calculateApiKey(path: String, body: String, phoneNumber: String) -> String {
     
-        let salt = "\u{97}\u{77}\u{105}\u{83}\u{77}\u{85}\u{118}\u{89}\u{109}\u{80}\u{71}\u{122}\u{57}\u{114}"
-        
+        let buf: [UInt8] = [97, 77, 105, 83, 77, 85, 118, 89, 109, 80, 71, 122, 57, 114]
+        var salt = ""
+        buf.withUnsafeBufferPointer { ptr in
+            let s = String.decodeCString(ptr.baseAddress,
+                                         as: UTF8.self,
+                                         repairingInvalidCodeUnits: true)
+            salt = (s?.result)!
+        }
         let rhex = randomString(length: 17)
         
         let strData = body.data(using: .utf8)! // Conversion to UTF-8 cannot fail
@@ -52,7 +58,10 @@ class CryptUtils {
         
         let firstStr = "\(path)::body::\(bodyCrc32)::key::\(salt)::phone_number::\(phoneNumber)"
         
+        print(firstStr)
+        
         let md5str = toMD5Hash(string: firstStr)
+        print(md5str)
         
         return md5str + rhex
     }

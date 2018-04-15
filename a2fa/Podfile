@@ -8,6 +8,7 @@ target 'a2fa' do
 	pod 'Firebase/Core'
 	pod 'Firebase/Messaging'
     pod 'Alamofire', '~> 4.7'
+    pod 'AlamofireNetworkActivityIndicator', '~> 2.2'
 	pod 'KeychainSwift', '~> 10.0'
     pod 'SmileLock', :path => "../"
 end

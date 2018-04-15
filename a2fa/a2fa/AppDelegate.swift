@@ -41,8 +41,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         application.registerForRemoteNotifications()
-        
+                
         // [END register_for_notifications]
+        
+        // CredStore Perform Query error handling
+        
+        /*let protectionSpace = URLProtectionSpace.init(host: "allatrack-tfa.tk",
+                                                      port: 3000,
+                                                      protocol: "https",
+                                                      realm: nil,
+                                                      authenticationMethod: nil)
+        
+        var credential: URLCredential? = URLCredentialStorage.shared.defaultCredential(for: protectionSpace)
+        
+        let userCredential = URLCredential(user: "user",
+                                           password: "password",
+                                           persistence: .permanent)
+        
+        URLCredentialStorage.shared.setDefaultCredential(userCredential, for: protectionSpace)*/
+        
         return true
     }
     

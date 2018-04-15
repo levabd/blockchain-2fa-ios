@@ -14,6 +14,8 @@
 		44026E43206287A500E60924 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44026E41206287A500E60924 /* LaunchScreen.storyboard */; };
 		44026E4E206287A600E60924 /* a2faTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44026E4D206287A600E60924 /* a2faTests.swift */; };
 		44026E59206287A600E60924 /* a2faUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44026E58206287A600E60924 /* a2faUITests.swift */; };
+		4434343C2082501D00E0AD48 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4434343B2082501C00E0AD48 /* Constants.swift */; };
+		4434344020847C3600E0AD48 /* URLEncodedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4434343F20847C3600E0AD48 /* URLEncodedString.swift */; };
 		444BFD2C2062EC0900A428B1 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444BFD252062EC0600A428B1 /* HomeViewController.swift */; };
 		444BFD2D2062EC0900A428B1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 444BFD262062EC0700A428B1 /* Main.storyboard */; };
 		444BFD2F2062EC0900A428B1 /* PasswordLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444BFD282062EC0800A428B1 /* PasswordLoginViewController.swift */; };
@@ -55,6 +57,8 @@
 		44026E54206287A600E60924 /* a2faUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = a2faUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		44026E58206287A600E60924 /* a2faUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = a2faUITests.swift; sourceTree = "<group>"; };
 		44026E5A206287A600E60924 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4434343B2082501C00E0AD48 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4434343F20847C3600E0AD48 /* URLEncodedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLEncodedString.swift; sourceTree = "<group>"; };
 		444BFD252062EC0600A428B1 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		444BFD262062EC0700A428B1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		444BFD282062EC0800A428B1 /* PasswordLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordLoginViewController.swift; sourceTree = "<group>"; };
@@ -120,6 +124,7 @@
 		44026E34206287A500E60924 /* a2fa */ = {
 			isa = PBXGroup;
 			children = (
+				4434343F20847C3600E0AD48 /* URLEncodedString.swift */,
 				4473BD272080E7DE0094A85D /* a2fa.entitlements */,
 				4473BD252080E6B60094A85D /* GoogleService-Info.plist */,
 				444BFD2B2062EC0900A428B1 /* extension.swift */,
@@ -135,6 +140,7 @@
 				44026E3C206287A500E60924 /* a2fa.xcdatamodeld */,
 				44EB77582081D0C40002030E /* a2fa-Bridging-Headers.h */,
 				44EB775620810DD30002030E /* Crypto.swift */,
+				4434343B2082501C00E0AD48 /* Constants.swift */,
 			);
 			path = a2fa;
 			sourceTree = "<group>";
@@ -322,6 +328,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-a2fa/Pods-a2fa-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -331,6 +338,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
@@ -389,6 +397,8 @@
 				444BFD2C2062EC0900A428B1 /* HomeViewController.swift in Sources */,
 				44EB775720810DD30002030E /* Crypto.swift in Sources */,
 				444BFD322062EC0900A428B1 /* extension.swift in Sources */,
+				4434344020847C3600E0AD48 /* URLEncodedString.swift in Sources */,
+				4434343C2082501D00E0AD48 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

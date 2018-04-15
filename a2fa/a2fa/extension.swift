@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 enum ColorType: String {
     case blue = "20aee5"
@@ -75,3 +76,4 @@ extension String {
         return !isEmpty && rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil
     }
 }
+

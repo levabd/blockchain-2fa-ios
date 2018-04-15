@@ -1,4 +1,6 @@
 import UIKit
+import KeychainSwift
+import Alamofire
 
 class HomeViewController: UIViewController {
     
@@ -9,6 +11,9 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var verifyRequestButton: UIButton!
     @IBOutlet weak var dismissRequestButton: UIButton!
     @IBOutlet weak var buttonsView: UIStackView!
+    
+    var phone:String = ""
+    var token:String = ""
     
     func showSpinner(){
         let alert = UIAlertController(title: nil, message: "Подождите...", preferredStyle: .alert)
@@ -22,31 +27,129 @@ class HomeViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func showRequestError(msg: String){
+        let alert = UIAlertController(title: "Ошибка", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+            NSLog("The \"OK\" alert occured.")
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func refreshRequest() {
+        let timestamp = Int(NSDate().timeIntervalSince1970)
+        let key = CryptoUtils.calculateApiKey(
+            path: "/v1/api/users/code",
+            body: "client_timestamp:\(timestamp);phone_number:\(phone);push_token:\(token);",
+            phoneNumber: phone
+        )
+        let requestHeaders: HTTPHeaders = [
+            "accept" : "application/json",
+            "api-key": key
+        ]
+        
+        let params: [String: Any] = [
+            "phone_number": phone,
+            "push_token": token,
+            "client_timestamp": timestamp
+        ]
+        
+        Alamofire.request(
+            "\(Constants.baseApiURL)/v1/api/users/code",
+            method: .get,
+            parameters: params,
+            encoding: URLEncoding.default,
+            headers: requestHeaders)
+            .responseJSON { responseJSON in
+                var errorMsg = ""
+                guard let statusCode = responseJSON.response?.statusCode else {
+                    errorMsg = "Проблемы с сетевым соединением. Попробуйте чуть позже."
+                    self.dismiss(animated: false, completion: nil)
+                    self.showRequestError(msg: errorMsg)
+                    return
+                }
+                
+                if statusCode == 404 {
+                    errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                } else if statusCode == 422 {
+                    errorMsg = "Нет новых запросов на авторизацию";
+                } else if statusCode != 200 {
+                    errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                }
+                
+                if statusCode != 200 {
+                    self.dismiss(animated: false, completion: nil)
+                    self.showRequestError(msg: errorMsg)
+                } else {
+                    self.showRequest()
+                }
+        }
+    }
+    
+    func verifyRequest(reject: Bool) {
+        let timestamp = Int(NSDate().timeIntervalSince1970)
+        let key = CryptoUtils.calculateApiKey(
+            path: "/v1/api/users/code",
+            body: "client_timestamp:\(timestamp);phone_number:\(phone);push_token:\(token);",
+            phoneNumber: phone
+        )
+        let requestHeaders: HTTPHeaders = [
+            "accept" : "application/json",
+            "Content-Type" : "application/json",
+            "api-key": key
+        ]
+        
+        Alamofire.request(
+            "\(Constants.baseApiURL)/v1/api/users/verify",
+            method: .get,
+            encoding: JSONEncoding.default,
+            headers: requestHeaders)
+            .responseJSON { responseJSON in
+                var errorMsg = ""
+                guard let statusCode = responseJSON.response?.statusCode else {
+                    errorMsg = "Проблемы с сетевым соединением. Попробуйте чуть позже."
+                    self.dismiss(animated: false, completion: nil)
+                    self.showRequestError(msg: errorMsg)
+                    return
+                }
+                
+                if statusCode == 404 {
+                    errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                } else if statusCode == 422 {
+                    errorMsg = "Нет новых запросов на авторизацию";
+                } else if statusCode != 200 {
+                    errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                }
+                
+                if statusCode != 200 {
+                    self.dismiss(animated: false, completion: nil)
+                    self.showRequestError(msg: errorMsg)
+                } else {
+                    self.showRequest()
+                }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let keychain = KeychainSwift()
+        phone = keychain.get("2fa-phone")!
+        token = keychain.get("2fa-pushToken")!
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Обновить", style: .plain, target: self, action: #selector(refreshTapped))
         
         showSpinner()
         
-        _ = Timer.scheduledTimer(timeInterval: 2.0,
-                                 target: self,
-                                 selector: #selector(showRequest(timer:)),
-                                 userInfo: nil,
-                                 repeats: false)
+        refreshRequest()
     }
     
     @objc func refreshTapped(_ sender: AnyObject){
         showSpinner()
         
-        _ = Timer.scheduledTimer(timeInterval: 2.0,
-                                 target: self,
-                                 selector: #selector(showRequest(timer:)),
-                                 userInfo: nil,
-                                 repeats: false)
+        refreshRequest()
     }
     
-    @objc func showRequest(timer: Timer!){
+    @objc func showRequest(){
         
         requestTitle.text = "Казахтелеком запрашивает разрешение"
         requestBody.text = "Сервис «Казахтелеком» запрашивает разрешение на событие «Авторизация»."

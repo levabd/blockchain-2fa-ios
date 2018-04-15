@@ -9,6 +9,8 @@
 import UIKit
 import KeychainSwift
 import Firebase
+import Alamofire
+import AlamofireNetworkActivityIndicator
 
 class RegistrationViewController: UIViewController {
     
@@ -31,7 +33,7 @@ class RegistrationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+              
         baseNavigation.title = isRegister ? "Зарегистрировать" : "Восстановить код"
         PINInput.placeholder = isRegister ? "PIN код" : "Новый PIN код"
         
@@ -116,7 +118,23 @@ class RegistrationViewController: UIViewController {
         navigationController!.pushViewController(targetVCID!, animated: true)
     }
     
-    @objc func register(timer: Timer!) {
+    func showRequestError(msg: String){
+        let alert = UIAlertController(title: "Ошибка", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+            NSLog("The \"OK\" alert occured.")
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func register(tkn: String?) {
+        let keychain = KeychainSwift()
+        keychain.delete("2fa-pushToken")
+        keychain.set(tkn ?? "", forKey: "2fa-pushToken")
+        keychain.delete("2fa-phone")
+        keychain.set(phone, forKey: "2fa-phone")
+        keychain.delete("2fa-pin")
+        keychain.set(pin, forKey: "2fa-pin")
+        
         dismiss(animated: false, completion: nil)
         
         let info = UIAlertController(title: "Операция успешна", message: "Не забывайте свой код допуска", preferredStyle: .alert)
@@ -124,10 +142,7 @@ class RegistrationViewController: UIViewController {
         present(info, animated: true, completion: nil)
     }
     
-    @objc func showSMS(timer: Timer!) {
-        let info = timer.userInfo as Any
-        print(info)
-        
+    @objc func showSMS(reshow: Bool) {
         step = 2
         
         PINInput.isHidden = true
@@ -136,26 +151,13 @@ class RegistrationViewController: UIViewController {
         SMSInput.isHidden = false
         SMSLabel.isHidden = false
         
-        _ = Timer.scheduledTimer(timeInterval: 60.0,
+        if !reshow {
+            _ = Timer.scheduledTimer(timeInterval: 60.0,
                                  target: self,
                                  selector: #selector(showResend(timer:)),
                                  userInfo: nil,
                                  repeats: false)
-        
-        dismiss(animated: false, completion: nil)
-    }
-    
-    @objc func reshowSMS(timer: Timer!) {
-        let info = timer.userInfo as Any
-        print(info)
-        
-        step = 2
-        
-        PINInput.isHidden = true
-        PINLabel.isHidden = true
-        
-        SMSInput.isHidden = false
-        SMSLabel.isHidden = false
+        }
         
         dismiss(animated: false, completion: nil)
     }
@@ -167,11 +169,49 @@ class RegistrationViewController: UIViewController {
             
             showSpinner()
             
-            _ = Timer.scheduledTimer(timeInterval: 2.0,
-                                     target: self,
-                                     selector: #selector(reshowSMS(timer:)),
-                                     userInfo: nil,
-                                     repeats: false)
+            let timestamp = Int(NSDate().timeIntervalSince1970)
+            let key = CryptoUtils.calculateApiKey(
+                path: "/v1/api/users/verify-number",
+                body: "client_timestamp:\(timestamp);phone_number:\(phone);",
+                phoneNumber: phone
+            )
+            let requestHeaders: HTTPHeaders = [
+                "accept" : "application/json",
+                "api-key": key
+            ]
+            
+            let params: [String: Any] = [
+                "phone_number": phone,
+                "client_timestamp": timestamp
+            ]
+                        
+            Alamofire.request(
+                "\(Constants.baseApiURL)/v1/api/users/verify-number",
+                method: .get,
+                parameters: params,
+                encoding: URLEncoding.default,
+                headers: requestHeaders)
+                .responseJSON { responseJSON in
+                    var errorMsg = ""
+                    guard let statusCode = responseJSON.response?.statusCode else {
+                        errorMsg = "Проблемы с сетевым соединением. Попробуйте чуть позже."
+                        self.dismiss(animated: false, completion: nil)
+                        self.showRequestError(msg: errorMsg)
+                        return
+                    }
+                    if statusCode == 404 {
+                        errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                    } else if statusCode != 200 {
+                        errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                    }
+                    
+                    if statusCode != 200 {
+                        self.dismiss(animated: false, completion: nil)
+                        self.showRequestError(msg: errorMsg)
+                    } else {
+                        self.showSMS(reshow: true)
+                    }
+            }
             
         }
     }
@@ -185,12 +225,125 @@ class RegistrationViewController: UIViewController {
                 
                 showSpinner()
                 
-                _ = Timer.scheduledTimer(timeInterval: 2.0,
-                                         target: self,
-                                         selector: #selector(showSMS(timer:)),
-                                         userInfo: [ "foo" : "bar" ],
-                                         repeats: false)
+                let timestamp = Int(NSDate().timeIntervalSince1970)
+                let key = CryptoUtils.calculateApiKey(
+                    path: "/v1/api/users/verify-number",
+                    body: "client_timestamp:\(timestamp);phone_number:\(phone);",
+                    phoneNumber: phone
+                )
+                let requestHeaders: HTTPHeaders = [
+                    "accept" : "application/json",
+                    "api-key": key
+                ]
                 
+                let params: [String: Any] = [
+                    "phone_number": phone,
+                    "client_timestamp": timestamp
+                ]
+                
+                // URL SEssion
+                // Show MBProgressHUD Here
+                var config                              :URLSessionConfiguration!
+                var urlSession                          :URLSession!
+                
+                config = URLSessionConfiguration.default
+                urlSession = URLSession(configuration: config)
+                
+                // MARK:- HeaderField
+                let HTTPHeaderField_ContentType         = "Content-Type"
+                
+                // MARK:- ContentType
+                let ContentType_ApplicationJson         = "application/json"
+                
+                //MARK: HTTPMethod
+                let HTTPMethod_Get                      = "GET"
+                
+                let callURL = URL.init(string: "https://httpbin.org/get")
+                
+                var request = URLRequest.init(url: callURL!)
+                
+                request.timeoutInterval = 60.0 // TimeoutInterval in Second
+                request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+                request.addValue(ContentType_ApplicationJson, forHTTPHeaderField: HTTPHeaderField_ContentType)
+                request.httpMethod = HTTPMethod_Get
+                
+                let dataTask = urlSession.dataTask(with: request) { (data,response,error) in
+                    if error != nil{
+                        return
+                    }
+                    do {
+                        let resultJson = try JSONSerialization.jsonObject(with: data!, options: []) as? [String:AnyObject]
+                        print("Result",resultJson!)
+                    } catch {
+                        print("Error -> \(error)")
+                    }
+                }
+                
+                dataTask.resume()
+                //
+                
+                //Implementing URLSession
+                let url = URL(string: "https://httpbin.org/get")
+                let request2 : URLRequest = URLRequest(url: url!)
+                request.httpMethod = "GET"
+                // let postString = "a=\(Int(teamInput.text!)!)"
+                // request.httpBody = postString.data(using: .utf8)
+                
+                let dataTask2 = URLSession.shared.dataTask(with: request2) {
+                    data,response,error in
+                    print("anything")
+                    do {
+                        if let jsonResult = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary {
+                            print(jsonResult)
+                        }
+                    } catch let error as NSError {
+                        print(error.localizedDescription)
+                    }
+                }
+                dataTask2.resume()
+                //End implementing URLSession
+                
+                Alamofire.request("https://httpbin.org/get").debugLog().responseJSON { response in
+                    print("Request: \(String(describing: response.request))")   // original url request
+                    print("Response: \(String(describing: response.response))") // http url response
+                    print("Result: \(response.result)")                         // response serialization result
+                    
+                    if let json = response.result.value {
+                        print("JSON: \(json)") // serialized json response
+                    }
+                    
+                    if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+                        print("Data: \(utf8Text)") // original server data as UTF8 string
+                    }
+                }
+                
+                Alamofire.request(
+                    "\(Constants.baseApiURL)/v1/api/users/verify-number",
+                    method: .get,
+                    parameters: params,
+                    encoding: URLEncoding.default,
+                    headers: requestHeaders).debugLog()
+                    .responseJSON { responseJSON in
+                        var errorMsg = ""
+                        guard let statusCode = responseJSON.response?.statusCode else {
+                            errorMsg = "Проблемы с сетевым соединением. Попробуйте чуть позже."
+                            self.dismiss(animated: false, completion: nil)
+                            self.showRequestError(msg: errorMsg)
+                            return
+                        }
+                        if statusCode == 404 {
+                            errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                        } else if statusCode != 200 {
+                            errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                        }
+                        
+                        if statusCode != 200 {
+                            self.dismiss(animated: false, completion: nil)
+                            self.showRequestError(msg: errorMsg)
+                        } else {
+                            self.showSMS(reshow: true)
+                        }
+                    }
             }
         } else if (step == 2) {
             let token = Messaging.messaging().fcmToken
@@ -210,17 +363,52 @@ class RegistrationViewController: UIViewController {
                 
                 showSpinner()
                 
-                let keychain = KeychainSwift()
-                keychain.delete("2fa-phone")
-                keychain.set(phone, forKey: "2fa-phone")
-                keychain.delete("2fa-pin")
-                keychain.set(pin, forKey: "2fa-pin")
+                let key = CryptoUtils.calculateApiKey(
+                    path: "/v1/api/users/verify-number",
+                    body: "code:\(sms);phone_number:\(phone);push_token:\(token ?? "");",
+                    phoneNumber: phone
+                )
+                let requestHeaders: HTTPHeaders = [
+                    "accept" : "application/json",
+                    "Content-Type" : "application/json",
+                    "api-key": key
+                ]
+                let params: [String: Any] = [
+                    "phone_number": phone,
+                    "push_token": token ?? "",
+                    "code": sms
+                ]
                 
-                _ = Timer.scheduledTimer(timeInterval: 1.0,
-                                         target: self,
-                                         selector: #selector(register(timer:)),
-                                         userInfo: nil,
-                                         repeats: false)
+                Alamofire.request(
+                    "\(Constants.baseApiURL)/v1/api/users/verify-number",
+                    method: .post,
+                    parameters: params,
+                    encoding: JSONEncoding.default,
+                    headers: requestHeaders)
+                    .responseJSON { responseJSON in
+                        var errorMsg = ""
+                        guard let statusCode = responseJSON.response?.statusCode else {
+                            errorMsg = "Проблемы с сетевым соединением. Попробуйте чуть позже."
+                            self.dismiss(animated: false, completion: nil)
+                            self.showRequestError(msg: errorMsg)
+                            return
+                        }
+                        
+                        if statusCode == 422 {
+                            errorMsg = "Код подтверждения устарел или неверен";
+                        } else if statusCode == 404 {
+                            errorMsg = "Пользователь с таким номером не зарегистрирован в системе";
+                        } else if statusCode != 200 {
+                            errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
+                        }
+                        
+                        if statusCode != 200 {
+                            self.dismiss(animated: false, completion: nil)
+                            self.showRequestError(msg: errorMsg)
+                        } else {
+                            self.register(tkn: token)
+                        }
+                }
                 
             }
         }
@@ -230,7 +418,15 @@ class RegistrationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
 
+extension Request {
+    public func debugLog() -> Self {
+        #if DEBUG
+        debugPrint("=======================================")
+        debugPrint(self)
+        debugPrint("=======================================")
+        #endif
+        return self
+    }
+}
