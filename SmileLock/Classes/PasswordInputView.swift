@@ -107,7 +107,7 @@ open class PasswordInputView: UIView {
         
         //update label
         label.text = numberString
-        label.font = UIFont.systemFont(ofSize: radius * fontSizeRatio, weight: UIFont.Weight.thin)
+        label.font = UIFont.systemFont(ofSize: radius * fontSizeRatio, weight: UIFontWeightThin)
         label.textColor = textColor
         
         //update circle view
@@ -148,7 +148,7 @@ private extension PasswordInputView {
     //MARK: Animation
     func touchDownAction() {
         let originFont = label.font
-        label.font = UIFont.systemFont(ofSize: originFont!.pointSize, weight: UIFont.Weight.light)
+        label.font = UIFont.systemFont(ofSize: originFont!.pointSize, weight: UIFontWeightLight)
         label.textColor = highlightTextColor
         if !self.isVibrancyEffect {
             backgroundColor = highlightBackgroundColor
@@ -158,7 +158,7 @@ private extension PasswordInputView {
     
     func touchUpAction() {
         let originFont = label.font
-        label.font = UIFont.systemFont(ofSize: originFont!.pointSize, weight: UIFont.Weight.thin)
+        label.font = UIFont.systemFont(ofSize: originFont!.pointSize, weight: UIFontWeightThin)
         label.textColor = textColor
         backgroundColor = borderColor
         circleView.backgroundColor = circleBackgroundColor

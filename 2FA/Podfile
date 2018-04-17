@@ -1,0 +1,14 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '10.0'
+use_frameworks!
+
+target '2FA' do
+	use_frameworks!
+	
+	pod 'Firebase/Core'
+	pod 'Firebase/Messaging'
+    # pod 'Alamofire', '~> 4.7'
+    # pod 'AlamofireNetworkActivityIndicator', '~> 2.2'
+	pod 'KeychainSwift', '~> 10.0'
+    pod 'SmileLock', :path => "../"
+end
