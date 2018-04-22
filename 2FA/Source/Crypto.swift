@@ -28,7 +28,7 @@ class CryptoUtils {
     }
     
     class func toMD5Hash(string: String) -> String {
-        let messageData = string.data(using:.utf8)!
+        let messageData = string.data(using:.utf8) ?? Data()
         var digestData = Data(count: Int(CC_MD5_DIGEST_LENGTH))
         
         _ = digestData.withUnsafeMutableBytes {digestBytes in
@@ -48,20 +48,23 @@ class CryptoUtils {
             let s = String.decodeCString(ptr.baseAddress,
                                          as: UTF8.self,
                                          repairingInvalidCodeUnits: true)
-            salt = (s?.result)!
+            salt = (s?.result) ?? ""
+            if salt.count>14 {
+                salt = String(salt.prefix(14))
+            }
         }
         let rhex = randomString(length: 17)
         
-        let strData = body.data(using: .utf8)! // Conversion to UTF-8 cannot fail
+        let strData = body.data(using: .utf8) ?? Data() // Conversion to UTF-8 cannot fail
         let crc = strData.withUnsafeBytes { crc32(0, $0, numericCast(strData.count)) }
         let bodyCrc32 = NSString(format:"%x", crc) // "%2x"
         
         let firstStr = "\(path)::body::\(bodyCrc32)::key::\(salt)::phone_number::\(phoneNumber)"
         
-        // print(firstStr)
+        print(firstStr)
         
         let md5str = toMD5Hash(string: firstStr)
-        // print(md5str)
+        print(md5str)
         
         return md5str + rhex
     }
