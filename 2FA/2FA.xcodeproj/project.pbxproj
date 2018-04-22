@@ -124,6 +124,7 @@
 		4C6D2C8C1C67EFEC00846168 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		4C6D2C8D1C67EFEC00846168 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		5F764B01E529147CC449648E /* Pods_2FA.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_2FA.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		800C60F1208B5C5F00E2CDB3 /* 2FA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 2FA.entitlements; sourceTree = "<group>"; };
 		89A990303C454967E086AE40 /* Pods-2FA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2FA.release.xcconfig"; path = "Pods/Target Support Files/Pods-2FA/Pods-2FA.release.xcconfig"; sourceTree = "<group>"; };
 		8B5F50808D338B4EE4D1DB39 /* Pods-2FA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2FA.debug.xcconfig"; path = "Pods/Target Support Files/Pods-2FA/Pods-2FA.debug.xcconfig"; sourceTree = "<group>"; };
 		F8111E0519A951050040E7D1 /* 2FA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2FA.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -186,6 +187,7 @@
 		F8111DFC19A951050040E7D1 = {
 			isa = PBXGroup;
 			children = (
+				800C60F1208B5C5F00E2CDB3 /* 2FA.entitlements */,
 				44490AF12084E1C4007BFE91 /* GoogleService-Info.plist */,
 				F8111E0719A951050040E7D1 /* Source */,
 				F8111E0619A951050040E7D1 /* Products */,
@@ -277,6 +279,11 @@
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = MJW86FK6F3;
 						LastSwiftMigration = 0900;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -530,7 +537,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -584,7 +591,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -603,6 +610,7 @@
 			baseConfigurationReference = 8B5F50808D338B4EE4D1DB39 /* Pods-2FA.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = 2FA.entitlements;
 				DEVELOPMENT_TEAM = MJW86FK6F3;
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -618,6 +626,7 @@
 			baseConfigurationReference = 89A990303C454967E086AE40 /* Pods-2FA.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = 2FA.entitlements;
 				DEVELOPMENT_TEAM = MJW86FK6F3;
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
