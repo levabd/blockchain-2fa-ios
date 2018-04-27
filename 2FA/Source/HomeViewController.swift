@@ -19,8 +19,6 @@ class HomeViewController: UIViewController {
     func showSpinner(){
         let alert = UIAlertController(title: nil, message: "Подождите...", preferredStyle: .alert)
         
-        print("Wait Alert showed")
-        
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
         loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
@@ -139,7 +137,7 @@ class HomeViewController: UIViewController {
                     errorMsg = "Не удалось подтвердить запрос. Попробуйте позже.";
                 } else if statusCode != 200 {
                     errorMsg = "Не удалось совершить запрос. Проверьте параметры и попробуйте позже.";
-                }
+                }блин, пе
                 
                 if statusCode != 200 {
                     self.dismiss(animated: false, completion: nil)
@@ -197,7 +195,7 @@ class HomeViewController: UIViewController {
     
     @objc func verifyRequest(rejected: Bool){
         
-        requestTitle.text = rejected ? "Запрос успешно отклонен" : "Запрос успешно верифицирован"
+        requestTitle.text = rejected ? "Запрос отклонен" : "Запрос успешно верифицирован"
         requestBody.isHidden = true
         buttonsView.isHidden = true
         
